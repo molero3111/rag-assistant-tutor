@@ -1,6 +1,8 @@
-# Python CLI Chat Application
+# RAG assistant CLI Chat Application
 
-This project is a command-line interface (CLI) chat application that interacts with the Mistral 7B language model running locally via LM Studio (`localhost:1234`). It provides advanced features such as semantic search with FAISS, context retrieval, session memory, and chain-of-thought prompting, all orchestrated using [LangChain](https://python.langchain.com/).
+This project is a RAG assistant tutor designed to answer questions about different topics but mainly on science like math and biology.
+
+It works as a command-line interface (CLI) chat application that interacts with the Mistral 7B language model running locally via LM Studio (`localhost:1234`). It provides advanced features such as semantic search with FAISS, context retrieval, session memory, and chain-of-thought prompting, all orchestrated using [LangChain](https://python.langchain.com/).
 
 ## Table of Contents
 - [Features](#features)
@@ -31,11 +33,17 @@ This project is a command-line interface (CLI) chat application that interacts w
 
 1. **Clone the repository:**
    ```sh
-   git clone <repository-url>
-   cd python-cli-chat-app
+   git clone https://github.com/molero3111/rag-assistant-tutor.git
+   cd rag-assistant-tutor
    ```
 
-2. **Install the required dependencies:**
+2. **Create a python virtual env:**
+   ```sh
+   python -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Install the required dependencies:**
    ```sh
    pip install -r requirements.txt
    ```
@@ -53,7 +61,7 @@ This project is a command-line interface (CLI) chat application that interacts w
 
 1. **Start the chat application:**
    ```sh
-   python src/chat.py
+   python chat.py
    ```
 
 2. **Interact with the assistant:**
@@ -74,7 +82,7 @@ This project is a command-line interface (CLI) chat application that interacts w
 
 ## Extending the Application
 
-- **Add Documents:** Place new `.txt` or supported files in the data directory and re-run the ingestion script to update the FAISS index.
+- **Add Documents:** Place new `.pdf` or supported files in the resource/pdfs directory and re-run the ingestion script to update the FAISS index.
 - **Customize Prompts:** Modify the prompt templates in `chat.py` to adjust the assistant's behavior or persona.
 - **Swap Embeddings/Models:** Easily switch to other HuggingFace embedding models or LLMs compatible with the OpenAI API.
 
