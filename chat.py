@@ -2,6 +2,13 @@ import requests
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 
+# Load environment variables from .env file
+load_dotenv()
+
+LLM_API_URL = os.getenv("LLM_API_URL", "http://localhost:1234/v1/chat/completions")
+LLM_MODEL = os.getenv("LLM_MODEL", "mistralai/mathstral-7b-v0.1")
+LLM_API_KEY = os.getenv("LLM_API_KEY", "")
+
 def get_relevant_context(query, k=4):
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     vectorstore = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
@@ -9,8 +16,9 @@ def get_relevant_context(query, k=4):
     return "\n\n".join([doc.page_content for doc in docs])
 
 def send_message_to_model(message, context):
-    url = "http://localhost:1234/v1/chat/completions"
     headers = {"Content-Type": "application/json"}
+    if LLM_API_KEY:
+        headers["Authorization"] = f"Bearer {LLM_API_KEY}"
     prompt = (
     "You are a helpful tutor for children and teenagers. "
     "Use the following context from textbooks to help answer the question. "
@@ -27,7 +35,7 @@ def send_message_to_model(message, context):
         ]
     }
     try:
-        response = requests.post(url, headers=headers, json=payload, timeout=600)
+        response = requests.post(LLM_API_URL, headers=headers, json=payload, timeout=600)
         response.raise_for_status()
         data = response.json()
         return data["choices"][0]["message"]["content"].strip()
@@ -35,14 +43,15 @@ def send_message_to_model(message, context):
         return f"Error communicating with the model: {e}"
 
 def send_message_to_model_with_history(messages):
-    url = "http://localhost:1234/v1/chat/completions"
     headers = {"Content-Type": "application/json"}
+    if LLM_API_KEY:
+        headers["Authorization"] = f"Bearer {LLM_API_KEY}"
     payload = {
-        "model": "mistralai/mathstral-7b-v0.1",
+        "model": LLM_MODEL,
         "messages": messages
     }
     try:
-        response = requests.post(url, headers=headers, json=payload, timeout=600)
+        response = requests.post(LLM_API_URL, headers=headers, json=payload, timeout=600)
         response.raise_for_status()
         data = response.json()
         return data["choices"][0]["message"]["content"].strip()
